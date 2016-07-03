@@ -87,11 +87,20 @@ var News = React.createClass({
   }
 });
 
+var TestInput = React.createClass({
+  render: function() {
+    return (
+      <input className='test-input' value='введите значение' />
+    );
+  }
+});
+
 var App = React.createClass({
   render: function() {
     return (
       <div className="app">
         <h3>Новости</h3>
+        <TestInput />
         <News data={my_news}/>
       </div>
     );
