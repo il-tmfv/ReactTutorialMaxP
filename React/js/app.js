@@ -47,7 +47,7 @@ var News = React.createClass({
     return (
       <div className="news">
         {newsTemplate}
-        <strong className={data.length > 0 ? '':'none'}>Всего новостей: {data.length}</strong>
+        <strong className={'news__count ' + (data.length > 0 ? '':'none') }>Всего новостей: {data.length}</strong>
       </div>
     );
   }
@@ -57,7 +57,7 @@ var App = React.createClass({
   render: function() {
     return (
       <div className="app">
-        Всем привет, я компонент App! Я умею отображать новости.
+        <h3>Новости</h3>
         <News data={my_news}/>
       </div>
     );
