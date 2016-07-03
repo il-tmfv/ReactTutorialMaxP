@@ -91,12 +91,18 @@ var TestInput = React.createClass({
   getInitialState: function () {
     return { myValue: '' }
   },
+  onBtnClickHandler: function() {
+    alert(this.state.myValue);
+  },
   onChangeHandler: function(e) {
     this.setState({myValue: e.target.value})
   },
   render: function() {
     return (
-      <input onChange={this.onChangeHandler} className='test-input' value={this.state.myValue} />
+      <div>
+        <input onChange={this.onChangeHandler} className='test-input' value={this.state.myValue} />
+        <button onClick={this.onBtnClickHandler}>Показать alert</button>
+      </div>
     );
   }
 });
