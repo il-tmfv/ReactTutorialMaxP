@@ -143,7 +143,7 @@ var Add = React.createClass({
           ref='alert_button'
           disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
           >
-          Показать alert
+          Добавить новость
         </button>
       </form>
     );
@@ -151,12 +151,25 @@ var Add = React.createClass({
 });
 
 var App = React.createClass({
+  getInitialState: function() {
+    return {
+      news: my_news
+    };
+  },
+  componentDidMount: function() {
+    /* Слушай событие "Создана новость"
+      если событие произошло, обнови this.state.news
+    */
+  },
+  componentWillUnmount: function() {
+    /* Больше не слушай событие "Создана новость" */
+  },
   render: function() {
     return (
       <div className="app">
         <Add />
         <h3>Новости</h3>
-        <News data={my_news}/>
+        <News data={this.state.news}/>
       </div>
     );
   }
