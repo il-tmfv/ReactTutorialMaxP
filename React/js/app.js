@@ -1,3 +1,5 @@
+window.ee = new EventEmitter();
+
 var my_news = [
   {
     author: 'Саша Печкин',
@@ -107,6 +109,19 @@ var Add = React.createClass({
   },
   onBtnClickHandler: function(e) {
     e.preventDefault();
+    var author = ReactDOM.findDOMNode(this.refs.author).value;
+    var textElement = ReactDOM.findDOMNode(this.refs.text);
+    var text = textElement.value;
+
+    var item = [{
+      author: author,
+      text: text,
+      bigText: '...'
+    }];
+
+    window.ee.emit('News.add', item);
+    textElement.value = '';
+    this.setState({textIsEmpty: true});
   },
   onCheckRuleClick: function(e) {
     this.setState({agreeNotChecked: !this.state.agreeNotChecked});
@@ -157,12 +172,14 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
-    /* Слушай событие "Создана новость"
-      если событие произошло, обнови this.state.news
-    */
+    var self = this;
+    window.ee.addListener('News.add', function(item) {
+      var nextNews = item.concat(self.state.news);
+      self.setState({news: nextNews});
+    });
   },
   componentWillUnmount: function() {
-    /* Больше не слушай событие "Создана новость" */
+    window.ee.removeListener('News.add');
   },
   render: function() {
     return (
