@@ -1,3 +1,5 @@
+window.ee = new EventEmitter();
+
 var my_news = [
   {
     author: 'Саша Печкин',
@@ -87,33 +89,104 @@ var News = React.createClass({
   }
 });
 
-var TestInput = React.createClass({
-  getInitialState: function () {
-    return { myValue: '' }
+var Add = React.createClass({
+  getInitialState: function() { //устанавливаем начальное состояние (state)
+    return {
+      agreeNotChecked: true,
+      authorIsEmpty: true,
+      textIsEmpty: true
+    };
   },
-  onBtnClickHandler: function() {
-    alert(this.state.myValue);
+  onFieldChange: function(fieldName, e) {
+    if (e.target.value.trim().length > 0) {
+      this.setState({[''+fieldName]:false})
+    } else {
+      this.setState({[''+fieldName]:true})
+    }
   },
-  onChangeHandler: function(e) {
-    this.setState({myValue: e.target.value})
+  componentDidMount: function() {
+    ReactDOM.findDOMNode(this.refs.author).focus();
+  },
+  onBtnClickHandler: function(e) {
+    e.preventDefault();
+    var author = ReactDOM.findDOMNode(this.refs.author).value;
+    var textElement = ReactDOM.findDOMNode(this.refs.text);
+    var text = textElement.value;
+
+    var item = [{
+      author: author,
+      text: text,
+      bigText: '...'
+    }];
+
+    window.ee.emit('News.add', item);
+    textElement.value = '';
+    this.setState({textIsEmpty: true});
+  },
+  onCheckRuleClick: function(e) {
+    this.setState({agreeNotChecked: !this.state.agreeNotChecked});
   },
   render: function() {
+    var agreeNotChecked = this.state.agreeNotChecked,
+        authorIsEmpty   = this.state.authorIsEmpty,
+        textIsEmpty     = this.state.textIsEmpty;
     return (
-      <div>
-        <input onChange={this.onChangeHandler} className='test-input' value={this.state.myValue} />
-        <button onClick={this.onBtnClickHandler}>Показать alert</button>
-      </div>
+      <form className='add cf'>
+        <input
+          type='text'
+          className='add__author'
+          defaultValue=''
+          placeholder='Ваше имя'
+          ref='author'
+          onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
+        />
+        <textarea
+          className='add__text'
+          defaultValue=''
+          placeholder='Текст новости'
+          onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
+          ref='text'
+        ></textarea>
+        <label className='add__checkrule'>
+          <input type='checkbox' ref='checkrule' onChange={this.onCheckRuleClick}/>Я согласен с правилами
+        </label>
+
+        {/* берем значение для disabled атрибута из state */}
+        <button
+          className='add__btn'
+          onClick={this.onBtnClickHandler}
+          ref='alert_button'
+          disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
+          >
+          Добавить новость
+        </button>
+      </form>
     );
   }
 });
 
 var App = React.createClass({
+  getInitialState: function() {
+    return {
+      news: my_news
+    };
+  },
+  componentDidMount: function() {
+    var self = this;
+    window.ee.addListener('News.add', function(item) {
+      var nextNews = item.concat(self.state.news);
+      self.setState({news: nextNews});
+    });
+  },
+  componentWillUnmount: function() {
+    window.ee.removeListener('News.add');
+  },
   render: function() {
     return (
       <div className="app">
+        <Add />
         <h3>Новости</h3>
-        <TestInput />
-        <News data={my_news}/>
+        <News data={this.state.news}/>
       </div>
     );
   }
