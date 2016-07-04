@@ -90,8 +90,17 @@ var News = React.createClass({
 var Add = React.createClass({
   getInitialState: function() { //устанавливаем начальное состояние (state)
     return {
-      btnIsDisabled: true
+      agreeNotChecked: true,
+      authorIsEmpty: true,
+      textIsEmpty: true
     };
+  },
+  onFieldChange: function(fieldName, e) {
+    if (e.target.value.trim().length > 0) {
+      this.setState({[''+fieldName]:false})
+    } else {
+      this.setState({[''+fieldName]:true})
+    }
   },
   componentDidMount: function() {
     ReactDOM.findDOMNode(this.refs.author).focus();
@@ -100,9 +109,12 @@ var Add = React.createClass({
     e.preventDefault();
   },
   onCheckRuleClick: function(e) {
-    this.setState({btnIsDisabled: !this.state.btnIsDisabled}); //устанавливаем значение в state
+    this.setState({agreeNotChecked: !this.state.agreeNotChecked});
   },
   render: function() {
+    var agreeNotChecked = this.state.agreeNotChecked,
+        authorIsEmpty   = this.state.authorIsEmpty,
+        textIsEmpty     = this.state.textIsEmpty;
     return (
       <form className='add cf'>
         <input
@@ -111,11 +123,13 @@ var Add = React.createClass({
           defaultValue=''
           placeholder='Ваше имя'
           ref='author'
+          onChange={this.onFieldChange.bind(this, 'authorIsEmpty')}
         />
         <textarea
           className='add__text'
           defaultValue=''
           placeholder='Текст новости'
+          onChange={this.onFieldChange.bind(this, 'textIsEmpty')}
           ref='text'
         ></textarea>
         <label className='add__checkrule'>
@@ -127,7 +141,7 @@ var Add = React.createClass({
           className='add__btn'
           onClick={this.onBtnClickHandler}
           ref='alert_button'
-          disabled={this.state.btnIsDisabled}
+          disabled={agreeNotChecked || authorIsEmpty || textIsEmpty}
           >
           Показать alert
         </button>
