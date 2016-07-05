@@ -1,0 +1,16 @@
+{
+  "name": "redux",
+  "version": "1.0.0",
+  "description": "Redux tutorial",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "timofeev",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.0"
+  }
+}
