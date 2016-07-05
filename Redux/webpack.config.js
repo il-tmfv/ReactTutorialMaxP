@@ -8,6 +8,18 @@ module.exports = {
     'webpack-hot-middleware/client',
     './src/index'
   ],
+  module: {
+    loaders: [
+      {
+        loaders: ['babel-loader'],
+        include: [
+          path.resolve(__dirname, "src"),
+        ],
+        test: /\.js$/,
+        plugins: ['transform-runtime']
+      }
+    ]
+  },
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'bundle.js',
